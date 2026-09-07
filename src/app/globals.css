@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens
+   Single source of truth for colour, type, spacing, motion & shape.
+   Do not introduce one-off values in components — extend this block.
+------------------------------------------------------------------- */
+@theme {
+  /* Typefaces (injected by next/font in the root layout) */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Surfaces — a deep navy base with one darker band for alternating sections */
+  --color-bg: #2a2e42;
+  --color-bg-alt: #23273a;
+  --color-surface: #333850;
+  --color-surface-2: #3b4059;
+  --color-border: #3a3f57;
+  --color-border-strong: #4a5070;
+
+  /* Text */
+  --color-fg: #ffffff;
+  --color-muted: #a8adc4;
+  --color-subtle: #9297af;
+
+  /* Accent */
+  --color-accent: #f5a623;
+  --color-accent-strong: #ffb845;
+  --color-accent-ink: #23273a;
+
+  /* Layout */
+  --container-page: 76rem;
+  --container-reading: 44rem;
+
+  /* Vertical rhythm */
+  --spacing-section: clamp(4.5rem, 3rem + 6vw, 8rem);
+
+  /* Type scale */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.18em;
+
+  --text-lead: clamp(1rem, 0.95rem + 0.35vw, 1.125rem);
+  --text-lead--line-height: 1.75;
+
+  --text-h3: clamp(1.125rem, 1.02rem + 0.5vw, 1.375rem);
+  --text-h3--line-height: 1.4;
+  --text-h3--letter-spacing: -0.005em;
+
+  --text-h2: clamp(1.625rem, 1.25rem + 1.5vw, 2.375rem);
+  --text-h2--line-height: 1.28;
+  --text-h2--letter-spacing: -0.012em;
+
+  --text-h1: clamp(2rem, 1.35rem + 2.6vw, 3.25rem);
+  --text-h1--line-height: 1.16;
+  --text-h1--letter-spacing: -0.018em;
+
+  --text-display: clamp(2.5rem, 1.4rem + 4.4vw, 3.875rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.028em;
+
+  /* Shape — the reference is square-edged, so radii stay small */
+  --radius-card: 0.25rem;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 260ms;
+  --duration-slow: 520ms;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset for the fixed header when jumping to #anchors */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  hr {
+    border-color: var(--color-border);
+  }
+}
+
+@layer utilities {
+  /* ----------------------------------------------------------------
+     Entrance animations.
+
+     Both are pure CSS so content is never left invisible when scripting
+     or the animation frame loop is unavailable: without support the
+     element simply renders in its final state.
+       .rise   — mount entrance for above-the-fold content
+       .reveal — scroll-driven entrance for sections further down
+  ----------------------------------------------------------------- */
+  .rise {
+    animation: reveal-rise var(--duration-slow) var(--ease-out-expo) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 15%;
+    }
+  }
+
+  /* Short accent rule used under headings, as in the reference layout. */
+  .accent-rule::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    margin-top: 1.75rem;
+    background-color: var(--color-accent);
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Motion preferences ------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rise,
+  .reveal {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print -------------------------------------------------------------
+   Global print reset. The resume page adds its own A4 rules on top.
+------------------------------------------------------------------- */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}

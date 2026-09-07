@@ -1,0 +1,85 @@
+/* ------------------------------------------------------------------
+   Resume document styles.
+
+   The on-screen sheet is a true-to-print A4 preview, so what you see is
+   what "Save as PDF" produces. Print rules live here rather than in
+   component classes so the page geometry is in one place.
+------------------------------------------------------------------- */
+
+.resume-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 15mm;
+  background: #ffffff;
+  color: #111315;
+}
+
+/* Below the width of an A4 sheet, reflow instead of scrolling sideways. */
+@media (max-width: 900px) {
+  .resume-sheet {
+    width: 100%;
+    min-height: 0;
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Keep a logical block (a role, a degree) from splitting across pages. */
+.resume-block {
+  break-inside: avoid;
+}
+
+/* Keep every date in one stable right-hand column. */
+.resume-entry-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: baseline;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+}
+
+.resume-entry-date {
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .resume-entry-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .resume-entry-date {
+    text-align: left;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 14mm 14mm;
+}
+
+@media print {
+  .resume-sheet {
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #ffffff;
+    color: #000000;
+  }
+
+  /* Section headings should not be stranded at the bottom of a page. */
+  .resume-section {
+    break-inside: auto;
+  }
+
+  .resume-section > h2 {
+    break-after: avoid;
+  }
+
+  /* Force a new page where the content explicitly asks for one. */
+  .resume-page-break {
+    break-before: page;
+  }
+}
