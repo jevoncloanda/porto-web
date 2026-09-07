@@ -2,7 +2,7 @@ import { ResumeSection } from "@/components/resume/ResumeSection";
 import { getSocialEntries } from "@/lib/social";
 import { experience } from "@content/experience";
 import { profile } from "@content/profile";
-import { certifications, education } from "@content/resume";
+import { certifications, education, organizations } from "@content/resume";
 import { skills } from "@content/skills";
 
 interface ContactItem {
@@ -15,10 +15,10 @@ interface ContactItem {
 function ContactLine() {
   const entries = getSocialEntries();
   const items: ContactItem[] = entries.map((entry) => ({
-      key: entry.kind,
-      label: entry.value,
-      href: entry.href,
-    }));
+    key: entry.kind,
+    label: entry.value,
+    href: entry.href,
+  }));
 
   return (
     <div className="mt-4 text-[0.8125rem] text-neutral-600">
@@ -26,7 +26,7 @@ function ContactLine() {
       <ul className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
         {items.map((item, index) => (
           <li key={item.key} className="flex items-center gap-4">
-            {index > 0 ? <span aria-hidden className="h-3 w-px bg-neutral-300" /> : null}
+            {index > 0 ? "|" : null}
             {item.href ? (
               <a href={item.href} className="underline-offset-2 hover:underline">
                 {item.label}
@@ -67,17 +67,21 @@ export function ResumeDocument() {
               <li key={`${entry.company}-${index}`} className="resume-block">
                 <div className="resume-entry-heading">
                   <h3 className="text-[0.9375rem] font-semibold text-neutral-900">
-                    {entry.role}
-                    <span className="font-normal text-neutral-500">
-                      {" · "}
-                      {entry.company}
-                    </span>
+                    {entry.company}
+                    {entry.location ? (
+                      <span className="font-normal text-neutral-500">
+                        {` · ${entry.location}`}
+                      </span>
+                    ) : null}
                   </h3>
                   <p className="resume-entry-date text-[0.6875rem] tracking-wide text-neutral-500">
                     {entry.period}
-                    {entry.location ? ` · ${entry.location}` : ""}
                   </p>
                 </div>
+
+                <p className="mt-1 text-[0.875rem] font-medium italic text-neutral-700">
+                  {entry.role}
+                </p>
 
                 {entry.description ? (
                   <p className="mt-2 text-[0.875rem] leading-[1.6] text-neutral-700">
@@ -131,21 +135,62 @@ export function ResumeDocument() {
               <li key={`${entry.institution}-${index}`} className="resume-block">
                 <div className="resume-entry-heading">
                   <h3 className="text-[0.9375rem] font-semibold text-neutral-900">
-                    {entry.qualification}
-                    <span className="font-normal text-neutral-500">
-                      {" · "}
-                      {entry.institution}
-                    </span>
+                    {entry.institution}
+                    {entry.location ? (
+                      <span className="font-normal text-neutral-500">
+                        {` · ${entry.location}`}
+                      </span>
+                    ) : null}
                   </h3>
                   <p className="resume-entry-date text-[0.6875rem] tracking-wide text-neutral-500">
                     {entry.period}
-                    {entry.location ? ` · ${entry.location}` : ""}
                   </p>
                 </div>
+                <p className="mt-1 text-[0.875rem] font-medium italic text-neutral-700">
+                  {entry.qualification}
+                  {entry.description ? `, ${entry.description}` : ""}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </ResumeSection>
+      ) : null}
+
+      {organizations.length > 0 ? (
+        <ResumeSection title="Organizational Experience">
+          <ol className="space-y-6">
+            {organizations.map((entry, index) => (
+              <li key={`${entry.company}-${index}`} className="resume-block">
+                <div className="resume-entry-heading">
+                  <h3 className="text-[0.9375rem] font-semibold text-neutral-900">
+                    {entry.company}
+                    {entry.location ? (
+                      <span className="font-normal text-neutral-500">
+                        {` · ${entry.location}`}
+                      </span>
+                    ) : null}
+                  </h3>
+                  <p className="resume-entry-date text-[0.6875rem] tracking-wide text-neutral-500">
+                    {entry.period}
+                  </p>
+                </div>
+
+                <p className="mt-1 text-[0.875rem] font-medium italic text-neutral-700">
+                  {entry.role}
+                </p>
+
                 {entry.description ? (
-                  <p className="mt-1.5 text-[0.875rem] leading-[1.6] text-neutral-700">
+                  <p className="mt-2 text-[0.875rem] leading-[1.6] text-neutral-700">
                     {entry.description}
                   </p>
+                ) : null}
+
+                {entry.achievements && entry.achievements.length > 0 ? (
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-[0.875rem] leading-[1.55] text-neutral-700 marker:text-neutral-400">
+                    {entry.achievements.map((achievement, achievementIndex) => (
+                      <li key={achievementIndex}>{achievement}</li>
+                    ))}
+                  </ul>
                 ) : null}
               </li>
             ))}

@@ -73,14 +73,4 @@ export const experience: ExperienceEntry[] = [
       "Docker",
     ],
   },
-  {
-    // Volunteer work. Delete this entry if you would rather keep the timeline
-    // to paid roles only.
-    company: "GSJA Betlehem",
-    role: "Back End Web Developer",
-    period: "Jul 2023 — Present",
-    location: "Bogor, Indonesia",
-    description:
-      "Helped develop the current website and content management system (CMS) for GSJA Betlehem.",
-  },
 ];

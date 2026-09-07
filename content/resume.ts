@@ -1,4 +1,8 @@
-import type { CertificationEntry, EducationEntry } from "@/lib/types";
+import type {
+  CertificationEntry,
+  EducationEntry,
+  ExperienceEntry,
+} from "@/lib/types";
 
 /**
  * Resume-only sections.
@@ -21,6 +25,29 @@ export const education: EducationEntry[] = [
     qualification: "High School Diploma in Science",
     period: "Jul 2018 — Jun 2021",
     location: "Bogor, Indonesia",
+  },
+];
+
+/** Volunteer and student-organisation experience, most recent first. */
+export const organizations: ExperienceEntry[] = [
+  {
+    company: "GSJA Betlehem",
+    role: "Back End Web Developer",
+    period: "Jul 2023 — Present",
+    location: "Bogor, Indonesia",
+    description:
+      "Helped develop the current website and content management system (CMS) for GSJA Betlehem.",
+  },
+  {
+    company: "Bina Nusantara Computer Club",
+    role: "Activist",
+    period: "Oct 2021 — Oct 2022",
+    location: "Jakarta, Indonesia",
+    achievements: [
+      "Participated in the Subdivision SWOT Analysis Program",
+      "Participated as a Technology Project member",
+      "Participated in video editing training and other training activities",
+    ],
   },
 ];
 

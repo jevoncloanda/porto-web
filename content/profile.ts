@@ -20,7 +20,7 @@ export const profile: Profile = {
 
   bio: [
     "I'm an application developer at Harita Group, where I build full-stack web applications with CodeIgniter, Node.js, Nuxt.js and MySQL. Before that I worked at Polytron, first as an intern and then as a developer, across Node.js, Go, CodeIgniter and WordPress — building APIs, fixing bugs, and closing the security issues that came out of testing.",
-    "I care about the parts of the job that outlast a single feature: introducing Git to a team that didn't have it, containerising applications with Docker so environments stop drifting, and wiring up CI/CD so deploys stay boring. I graduated in Computer Science from Bina Nusantara University in 2025, and I'm still happiest working on something I haven't shipped before.",
+    "I care about the parts of the job that outlast a single feature: introducing Git to a team that didn't have it, containerising applications with Docker so environments stop drifting, and wiring up CI/CD so deploys stay boring. I graduated in Computer Science from Bina Nusantara University in 2025, and I'm still excited to learn and grow as a developer.",
   ],
 
   // Replace the file at public/profile/portrait.png with your own photo and
