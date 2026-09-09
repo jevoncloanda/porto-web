@@ -10,7 +10,7 @@ import type { ExperienceEntry } from "@/lib/types";
 export const experience: ExperienceEntry[] = [
   {
     company: "Harita Group",
-    role: "Application Developer",
+    role: "Full Stack Developer",
     period: "Jun 2025 — Present",
     location: "Jakarta, Indonesia",
     description:
@@ -34,7 +34,7 @@ export const experience: ExperienceEntry[] = [
   },
   {
     company: "PT Hartono Istana Teknologi (Polytron)",
-    role: "Application Developer",
+    role: "Full Stack Developer",
     period: "Feb 2025 — May 2025",
     location: "Jakarta, Indonesia",
     description:
@@ -57,7 +57,7 @@ export const experience: ExperienceEntry[] = [
   },
   {
     company: "PT Hartono Istana Teknologi (Polytron)",
-    role: "Application Developer Intern",
+    role: "Full Stack Developer Intern",
     period: "Feb 2024 — Jan 2025",
     location: "Jakarta, Indonesia",
     description:
