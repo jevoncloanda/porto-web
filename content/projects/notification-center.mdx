@@ -1,0 +1,75 @@
+---
+title: "Notification Center"
+subtitle: "Centralized, observable infrastructure for asynchronous delivery"
+summary: "A production gateway for Email and Telegram notifications, separating API acceptance from asynchronous provider delivery through persistent state, queues, workers, and operational monitoring."
+year: 2025
+type: professional
+category: "Backend Infrastructure"
+role: "System design, backend & integrations"
+featured: true
+featuredOrder: 2
+confidential: true
+placeholder: false
+order: 1
+stack:
+  - "Node.js"
+  - "Express"
+  - "MySQL"
+  - "Redis"
+  - "Bull"
+  - "Nodemailer"
+  - "Telegraf"
+  - "Docker"
+cover: /projects/notification-center/production-dashboard.png
+coverAlt: "Approved production dashboard showing Email and Telegram activity over a 30-day period, including sent, queued, failed, and validation states"
+---
+
+## Overview
+
+I designed and implemented Notification Center as a shared gateway for internal applications that need to send Email or Telegram notifications. Calling applications use one validated API boundary; provider work happens asynchronously; operators retain one durable place to inspect delivery state and failures.
+
+<EvidenceCallout
+  value="≈100K"
+  label="notification events / month"
+  detail="Operating-volume estimate across Email and Telegram events. It is not a count of unique recipients, a guaranteed monthly total, or a claim that every event succeeds."
+/>
+
+<Figure
+  src="/projects/notification-center/production-dashboard.png"
+  alt="Notification Center production dashboard showing the last 30 days of Email and Telegram activity, including 96,562 sent email notifications, 646 failed email notifications, 95 email validation errors, and 560 Telegram events"
+  caption="Approved production dashboard over a 30-day range. Failure and validation states remain visible; no production data was fabricated or altered."
+  fit="contain"
+/>
+
+## Problem
+
+Internal applications needed a common integration boundary for multiple notification channels. More importantly, the system had to preserve a distinction that synchronous integrations often blur: an API request accepted for processing is not yet a successfully delivered message.
+
+Provider calls can be slow or temporarily fail. Recipient and attachment input must be bounded before delivery. Telegram requires a verified recipient-to-chat relationship. Operators also need to trace queue jobs and failures without exposing provider credentials to calling applications.
+
+## Architecture
+
+<NotificationProcessingFlow />
+
+Accepted Email work returns `202 Accepted` only after a traceable record and queue job exist. Separate Email and Telegram workers call their providers and update the same persistent record with the final state. This keeps caller latency independent from provider response time while making the API contract honest.
+
+## Engineering Decisions
+
+### Persist state around queue boundaries
+
+Validation failures are recorded before queueing; valid work receives a `queued` record before enqueue. Queue job IDs connect Redis work to MySQL history. Enqueue failure, delivery failure, removed jobs, and stale queued records are reconciled into explicit states instead of remaining ambiguous.
+
+### Bound provider pressure and recover transient failures
+
+Channel workers use concurrency limits, configurable rate limits, and three attempts with exponential backoff. Failed jobs remain observable. Authenticated operators can retry eligible records; when a Redis job no longer exists, recoverable work can be rebuilt from persisted state.
+
+### Make recipient onboarding a controlled handoff
+
+Telegram registration uses random, expiring, single-use tokens. The server-side access token is stored as a hash and consumed transactionally before a short-lived registration session binds the verified chat.
+
+## Operational Visibility
+
+The dashboard aggregates period totals and daily trends from notification records. Operators can inspect Email and Telegram states, search and export logs, monitor both queues, and retry eligible failures. Ordered shutdown stops new HTTP work, pauses local processors, stops bot polling, then closes Redis and MySQL connections.
+
+The visible 30-day production sample contains **96,562 sent Email events**, **646 failed Email events**, **95 validation errors**, and **560 Telegram events**. These figures demonstrate production use without implying unique users, perfect delivery, or permanent monthly volume.
+

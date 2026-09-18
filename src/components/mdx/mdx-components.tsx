@@ -3,6 +3,16 @@ import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { Notice } from "@/components/ui/Notice";
+import {
+  EmailMigrationLifecycle,
+  EmailMigrationPreview,
+  EvidenceCallout,
+  NotificationProcessingFlow,
+  PortalActionManagement,
+  PortalIncidentLifecycle,
+  PortalWorkflowMap,
+} from "@/components/projects/CaseStudyVisuals";
+import { cn } from "@/lib/cn";
 
 /**
  * Component map for case-study MDX.
@@ -36,13 +46,20 @@ interface FigureProps {
   src: string;
   alt: string;
   caption?: string;
+  fit?: "cover" | "contain";
 }
 
-export function Figure({ src, alt, caption }: FigureProps) {
+export function Figure({ src, alt, caption, fit = "cover" }: FigureProps) {
   return (
     <figure className="my-10">
       <div className="relative aspect-16/10 overflow-hidden rounded-card border border-border bg-surface-2">
-        <Image src={src} alt={alt} fill sizes="(min-width: 768px) 44rem, 100vw" className="object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(min-width: 768px) 44rem, 100vw"
+          className={cn(fit === "contain" ? "object-contain" : "object-cover")}
+        />
       </div>
       {caption ? (
         <figcaption className="mt-3 text-sm text-subtle">{caption}</figcaption>
@@ -111,4 +128,11 @@ export const mdxComponents = {
     typeof src === "string" ? <Figure src={src} alt={alt ?? ""} /> : null,
   Figure,
   Callout,
+  EvidenceCallout,
+  EmailMigrationPreview,
+  EmailMigrationLifecycle,
+  NotificationProcessingFlow,
+  PortalWorkflowMap,
+  PortalIncidentLifecycle,
+  PortalActionManagement,
 };

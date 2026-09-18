@@ -118,6 +118,8 @@ export interface ProjectFrontmatter {
   role?: string;
   period?: string;
   featured?: boolean;
+  /** Explicit homepage order. Lower numbers appear first. */
+  featuredOrder?: number;
   confidential?: boolean;
   /** Marks demo content so the UI can label it honestly. */
   placeholder?: boolean;
@@ -142,6 +144,7 @@ export interface ProjectMeta {
   role?: string;
   period?: string;
   featured: boolean;
+  featuredOrder: number;
   confidential: boolean;
   placeholder: boolean;
   stack: string[];

@@ -1,0 +1,68 @@
+---
+title: "Email Migration"
+subtitle: "Production-safe identity changes across heterogeneous systems"
+summary: "A controlled workflow for migrating employee email identities across registered data locations, with preview, conflict checks, guarded execution, verification, audit evidence, and recovery."
+year: 2026
+type: professional
+category: "Data Integrity"
+role: "Workflow design, migration scope & safety requirements"
+featured: true
+featuredOrder: 1
+confidential: true
+placeholder: false
+order: 1
+stack:
+  - "Node.js 22"
+  - "Express"
+  - "MySQL / MariaDB"
+  - "SQL Server"
+  - "PostgreSQL"
+  - "Docker"
+cover: /projects/email-migration/cover.svg
+coverAlt: "Representative email migration preview using fictional identities, generic systems, and a blocking conflict"
+---
+
+## Overview
+
+Email Migration is an internal production application for changing an employee identity from a previous company email domain to a new domain across existing systems. The hard part is not replacing text. It is limiting where data may change, showing an operator the complete affected scope, and preserving evidence for every outcome.
+
+I identified the affected data locations and defined the primary operator workflow and safety requirements: explicit database, table, and column targeting; preview before execution; conflict handling; exact and delimiter-aware matching; verification; auditing; and recovery. Implementation used AI assistance, including parts of the target-registry structure, JSON matching, audit schema, and the optimistic-concurrency guard.
+
+<EmailMigrationPreview />
+
+## The Risk
+
+One email identity can appear as an exact field value, a token inside a delimited list, or a property inside nested JSON. A broad domain replacement could touch unrelated text, introduce a duplicate destination identity, or leave several systems in different states after a partial failure.
+
+The application therefore treats each approved location as an explicit target and each migration as a reviewable, independently verifiable operation.
+
+## Safety Lifecycle
+
+Preview is read-only. The browser supplies the previous identity; the server derives the destination and selects every database location from trusted configuration. Execution is a separate confirmed action and repeats critical checks against current data before mutation.
+
+<EmailMigrationLifecycle />
+
+Each target runs in its own database transaction. The update matches both the registered row key and the complete expected value, requires exactly one affected row, then re-reads the data before commit. A failed target rolls back without hiding successful work elsewhere, so the overall result can be success, partial success, or failure.
+
+## One Intent, Three Storage Shapes
+
+- **Exact values** compare and replace one complete identity.
+- **Delimited values** compare trimmed, complete tokens while preserving unrelated tokens and surrounding whitespace.
+- **JSON documents** are parsed and traversed; only complete string values under a registered property are eligible.
+
+Matching is case-insensitive, but never broadens into substring or domain-wide replacement. Destination coexistence and relevant malformed JSON block execution instead of falling back to unsafe text manipulation.
+
+## Audit, Verification & Recovery
+
+The audit trail links a migration header, per-target outcomes, row-level before/after snapshots, and a timeline through one migration ID. Verification occurs before each target commit and checks the expected complete value, removal of the old identity, and format-specific replacement counts.
+
+Recovery is deliberate, not a blind cross-system rollback. A dry-run-first operator command uses audited row keys, restores a value only when current data still matches the audited post-migration state, verifies the restoration, and appends new recovery events without rewriting original evidence.
+
+## Production Learning
+
+The application is deployed and actively used for an organization-wide employee email migration. One migration involving approximately 7,000 rows encountered a SQL/query timeout; investigation led to an indexing improvement for that target. The incident reinforced why production data shape and scale must remain part of migration readiness—not an assumption made from smaller test cases.
+
+<Callout>
+  Cross-system atomicity is intentionally not claimed. Independent target transactions, explicit partial outcomes, audit evidence, and controlled recovery make that boundary visible.
+</Callout>
+

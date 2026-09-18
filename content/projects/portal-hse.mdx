@@ -1,0 +1,68 @@
+---
+title: "Portal HSE"
+subtitle: "Connected operational workflows inside a team-built HSE platform"
+summary: "A team-built internal platform where I contributed incident and investigation workflows, inspection and hazard follow-up, centralized Action Management, governance, and cross-module insights."
+year: 2025
+type: professional
+category: "Domain Workflows"
+role: "Contributor — selected operational workflows & insights"
+featured: true
+featuredOrder: 3
+confidential: true
+placeholder: false
+order: 2
+stack:
+  - "Node.js"
+  - "Express"
+  - "EJS"
+  - "MySQL"
+  - "Redis"
+  - "Chart.js"
+cover: /projects/portal-hse/cover.svg
+coverAlt: "Representative Portal HSE architecture showing operational modules feeding Action Management and performance insights"
+---
+
+## Overview
+
+Portal HSE is a **team-built** internal platform for connected Health, Safety, and Environment workflows. My contribution covered Incident Reporting, Incident Investigation, HSE Governance, Inspection Reporting, Hazard Reporting, Action Management, and HSE Performance / Insights. Other modules in the wider platform were built by teammates.
+
+The engineering story is not a catalogue of forms. It is how source-specific records move through reporting, investigation, follow-up, closure, and analysis without losing their domain rules or ownership.
+
+<PortalWorkflowMap />
+
+## Connected Operational Workflows
+
+The server-rendered Node.js application uses Express and EJS with MySQL persistence and Redis-backed sessions. Operational modules own their workflows and transactional writes; supporting services provide uploads, notifications, exports, reminders, and Chart.js reporting.
+
+Action Management is the cross-module integration point. It presents a common operational view over incident investigation actions, negative inspection findings, hazard follow-ups, and manually created actions. The shared view normalizes source, document reference, action, PIC, due date, and status while updates return to the originating record.
+
+## Incident & Investigation Lifecycle
+
+Saving an incident also creates its linked investigation record. Status is derived from investigation completeness, then progresses through classification-based approvals and an explicit close action.
+
+<PortalIncidentLifecycle />
+
+HIPO incidents use the major approval level; near misses use the minor level. Approval access follows configured role and department requirements. Incident notification remains a separate concern, so authorized send—or an explicit decision not to send—does not masquerade as a lifecycle gate.
+
+## Centralized Action Management
+
+<PortalActionManagement />
+
+The shared action list is a union-shaped read model, not a second copy of every source record. Source-discriminated updates change due dates and statuses in the relevant incident action, inspection finding, hazard report, or standalone action. Users can navigate back to the origin, add completion evidence and notes, and review status history.
+
+Open items past their due date display as overdue. A scheduled reminder selects non-closed items that are approaching or past due and notifies the assigned PIC when an email is available. Completing an action updates its source row; it does not automatically close a parent incident.
+
+## Governance & Insights
+
+HSE Governance manages controlled-document metadata, uploads, sequential review and approval, revision requests, publication, and obsolescence. It remains separate from Action Management because no verified integration between those workflows exists.
+
+HSE Performance / Insights is the analytical read side. Live database queries aggregate current incident, governance, inspection, hazard, and action records into module-specific counts and distributions, including investigation status and overdue work. The wider team-built dashboard also contains analytical areas outside my contribution; those are not presented here as my implementation.
+
+## Result
+
+The result is a production internal platform connecting operational reporting, controlled workflows, follow-up ownership, and management visibility. No approved public impact metrics exist, so this case study does not claim time savings, incident reduction, user counts, or performance gains.
+
+<Callout>
+  All records and interface examples shown here are fictional. No production incident, employee, hazard, inspection, corrective action, or company data is published.
+</Callout>
+

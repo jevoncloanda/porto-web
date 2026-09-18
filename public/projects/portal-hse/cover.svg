@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Portal HSE connected workflow architecture</title>
+  <desc id="desc">Representative architecture showing incident, inspection, hazard, and standalone actions feeding centralized Action Management and operational insights.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#222638"/><stop offset="1" stop-color="#30364e"/></linearGradient></defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="120" y="115" fill="#f5a623" font-size="18" letter-spacing="4">TEAM-BUILT PLATFORM · CONTRIBUTION SCOPE</text>
+    <text x="120" y="168" fill="#ffffff" font-size="42" font-weight="700">Connected operational workflows</text>
+    <text x="120" y="207" fill="#a8adc4" font-size="20">Source records stay owned by their modules while follow-up work becomes visible in one place.</text>
+    <g fill="#333850" stroke="#4a5070" stroke-width="2">
+      <rect x="120" y="305" width="275" height="120" rx="8"/><rect x="455" y="305" width="275" height="120" rx="8"/>
+      <rect x="790" y="305" width="275" height="120" rx="8"/><rect x="1125" y="305" width="275" height="120" rx="8"/>
+    </g>
+    <g fill="#ffffff" font-size="22" font-weight="700" text-anchor="middle">
+      <text x="257" y="360">Incident +</text><text x="257" y="390">Investigation</text>
+      <text x="592" y="360">Inspection</text><text x="592" y="390">Findings</text>
+      <text x="927" y="360">Hazard</text><text x="927" y="390">Follow-up</text>
+      <text x="1262" y="360">Standalone</text><text x="1262" y="390">Action</text>
+    </g>
+    <g stroke="#f5a623" stroke-width="4" fill="none"><path d="M257 425v105h543"/><path d="M592 425v105h208"/><path d="M927 425v105H800"/><path d="M1262 425v105H800"/><path d="m788 514 12 16 12-16"/></g>
+    <rect x="475" y="530" width="650" height="205" rx="10" fill="#383846" stroke="#f5a623" stroke-width="3"/>
+    <text x="800" y="594" text-anchor="middle" fill="#ffffff" font-size="32" font-weight="700">Action Management</text>
+    <text x="800" y="635" text-anchor="middle" fill="#a8adc4" font-size="20">Source · reference · action · PIC · due date · status</text>
+    <text x="800" y="674" text-anchor="middle" fill="#a8adc4" font-size="20">Evidence · notes · history · source navigation</text>
+    <rect x="598" y="775" width="404" height="104" rx="8" fill="#333850" stroke="#4a5070" stroke-width="2"/>
+    <text x="800" y="820" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">HSE Performance / Insights</text>
+    <text x="800" y="852" text-anchor="middle" fill="#a8adc4" font-size="17">Live counts · status · overdue work</text>
+    <path d="M800 735v40" stroke="#a8adc4" stroke-width="3" stroke-dasharray="8 8"/>
+    <text x="120" y="945" fill="#9297af" font-size="16" letter-spacing="2">REPRESENTATIVE ARCHITECTURE · NO PRODUCTION DATA</text>
+  </g>
+</svg>

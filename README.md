@@ -7,9 +7,9 @@ Everything you will normally change lives in `content/`. UI components read from
 layer and never hardcode personal information, so changing a value in one place updates
 the whole site — homepage, project pages, resume and SEO metadata alike.
 
-> **Phase 1 status:** the UI and content architecture are complete. All personal
-> information and projects are clearly marked `[PLACEHOLDER]` content — see
-> [Replace the placeholders](#replace-the-placeholders).
+> **Current status:** the UI and content architecture are complete. Three
+> confidential professional case studies are published from sanitized source
+> material; demo templates remain clearly marked as placeholders.
 
 ---
 
@@ -122,6 +122,7 @@ category: Web App # free-form, becomes a label on the card
 role: Lead Engineer
 period: Jan – Jun 2026
 featured: true # show on the homepage
+featuredOrder: 1 # optional homepage order; lower numbers appear first
 confidential: false # see below
 placeholder: false # marks demo content; leave false for real work
 order: 1 # tie-breaker within the same year (lower first)
@@ -158,6 +159,10 @@ Two extra components are available inside MDX:
 
 <Callout>Something worth pulling out of the flow of the text.</Callout>
 ```
+
+Professional case studies also use responsive, portfolio-native visuals from
+`src/components/projects/CaseStudyVisuals.tsx`. Their public narrative remains
+in MDX; the components contain only diagram/interface presentation.
 
 ### Featured projects
 

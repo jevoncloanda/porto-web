@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Representative email migration preview</title>
+  <desc id="desc">Fictional migration preview showing source and destination identities, three registered targets, and a blocking conflict.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#23273a"/><stop offset="1" stop-color="#30364e"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="32" flood-color="#111522" flood-opacity=".45"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <circle cx="1390" cy="90" r="230" fill="#f5a623" opacity=".08"/>
+  <g filter="url(#shadow)">
+    <rect x="150" y="105" width="1300" height="790" rx="12" fill="#292e43" stroke="#4a5070" stroke-width="2"/>
+    <rect x="150" y="105" width="1300" height="78" rx="12" fill="#333850"/>
+    <circle cx="196" cy="144" r="7" fill="#f5a623"/><circle cx="222" cy="144" r="7" fill="#4a5070"/><circle cx="248" cy="144" r="7" fill="#4a5070"/>
+    <text x="300" y="153" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">Migration preview</text>
+    <text x="1260" y="151" fill="#fca5a5" font-family="Arial, sans-serif" font-size="18">EXECUTION BLOCKED</text>
+  </g>
+  <text x="215" y="260" fill="#9297af" font-family="Arial, sans-serif" font-size="17" letter-spacing="2">PREVIOUS IDENTITY</text>
+  <text x="215" y="301" fill="#ffffff" font-family="monospace" font-size="25">alex@example-old.com</text>
+  <path d="M650 288h82" stroke="#f5a623" stroke-width="3"/><path d="m720 276 13 12-13 12" fill="none" stroke="#f5a623" stroke-width="3"/>
+  <text x="790" y="260" fill="#9297af" font-family="Arial, sans-serif" font-size="17" letter-spacing="2">SERVER-DERIVED IDENTITY</text>
+  <text x="790" y="301" fill="#ffffff" font-family="monospace" font-size="25">alex@example-new.com</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="215" y="365" width="1170" height="118" rx="7" fill="#333850" stroke="#4a5070"/>
+    <text x="250" y="409" fill="#ffffff" font-size="24" font-weight="700">System A</text><text x="250" y="447" fill="#a8adc4" font-size="19">User identity · Exact match · 1 row</text>
+    <rect x="1190" y="400" width="146" height="42" rx="21" fill="#193e38"/><text x="1233" y="428" fill="#86efac" font-size="18">VALID</text>
+    <rect x="215" y="510" width="1170" height="118" rx="7" fill="#333850" stroke="#4a5070"/>
+    <text x="250" y="554" fill="#ffffff" font-size="24" font-weight="700">System B</text><text x="250" y="592" fill="#a8adc4" font-size="19">Recipient list · Delimited match · 4 rows</text>
+    <rect x="1190" y="545" width="146" height="42" rx="21" fill="#193e38"/><text x="1233" y="573" fill="#86efac" font-size="18">VALID</text>
+    <rect x="215" y="655" width="1170" height="142" rx="7" fill="#3a303d" stroke="#fb7185" stroke-opacity=".7"/>
+    <text x="250" y="699" fill="#ffffff" font-size="24" font-weight="700">System C</text><text x="250" y="737" fill="#a8adc4" font-size="19">Notification document · JSON match · 2 rows</text>
+    <text x="250" y="772" fill="#fda4af" font-size="17">Destination identity already exists in one configured property.</text>
+    <rect x="1160" y="690" width="176" height="42" rx="21" fill="#4b2632"/><text x="1193" y="718" fill="#fda4af" font-size="18">CONFLICT</text>
+  </g>
+  <text x="215" y="855" fill="#9297af" font-family="Arial, sans-serif" font-size="16" letter-spacing="1.6">REPRESENTATIVE INTERFACE · FICTIONAL DATA</text>
+</svg>

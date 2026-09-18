@@ -76,6 +76,8 @@ function normalize(slug: string, data: Partial<ProjectFrontmatter>): ProjectMeta
     role: data.role,
     period: data.period,
     featured: data.featured === true,
+    featuredOrder:
+      typeof data.featuredOrder === "number" ? data.featuredOrder : Number.MAX_SAFE_INTEGER,
     confidential: data.confidential === true,
     placeholder: data.placeholder === true,
     stack: toStringArray(data.stack),
@@ -145,7 +147,9 @@ export async function getProjectBySlug(slug: string): Promise<Project | undefine
 
 export async function getFeaturedProjects(limit?: number): Promise<Project[]> {
   const projects = await getAllProjects();
-  const featured = projects.filter((project) => project.featured);
+  const featured = projects
+    .filter((project) => project.featured)
+    .sort((a, b) => a.featuredOrder - b.featuredOrder || byRecency(a, b));
   // Fall back to the most recent work so the homepage is never empty.
   const list = featured.length > 0 ? featured : projects;
   return typeof limit === "number" ? list.slice(0, limit) : list;
@@ -157,12 +161,21 @@ export async function getProjectNeighbours(slug: string): Promise<{
   next?: ProjectMeta;
 }> {
   const projects = await getAllProjects();
-  const index = projects.findIndex((project) => project.slug === slug);
+  const current = projects.find((project) => project.slug === slug);
+  if (!current) return {};
+
+  // Keep real case-study navigation focused on real work. Demo templates still
+  // link through the full content set so their optional-state examples remain
+  // easy to inspect during development.
+  const neighbours = current.placeholder
+    ? projects
+    : projects.filter((project) => !project.placeholder);
+  const index = neighbours.findIndex((project) => project.slug === slug);
   if (index === -1) return {};
 
   return {
-    previous: projects[index - 1],
-    next: projects[index + 1],
+    previous: neighbours[index - 1],
+    next: neighbours[index + 1],
   };
 }
 
