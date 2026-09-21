@@ -12,65 +12,107 @@ export function Hero() {
   const { photo } = profile;
 
   return (
-    <section id="top" className="relative overflow-hidden pt-28 pb-20 sm:pt-36 lg:pt-40">
+    <section
+      id="top"
+      className="relative overflow-hidden pt-28 pb-16 sm:pt-32 lg:min-h-[760px] lg:pt-24 lg:pb-20"
+    >
       <Container>
-        <div className="grid items-end gap-12 lg:grid-cols-12 lg:gap-10">
-          {/* Name block — left, as in the reference */}
-          <div className="lg:col-span-5">
-            <Reveal mode="mount">
-              <h1 className="text-display font-semibold break-words text-fg">
-                {profile.name}
-                <span className="text-accent">.</span>
-              </h1>
-            </Reveal>
-
-            <Reveal mode="mount" delay={0.05}>
-              <div aria-hidden className="mt-7 h-[3px] w-12 bg-accent" />
-            </Reveal>
-
-            <Reveal mode="mount" delay={0.1}>
-              <SocialLinks className="mt-8" />
-            </Reveal>
+        {/* Top metadata */}
+        <Reveal mode="mount">
+          <div className="relative z-30 flex items-center justify-between gap-6">
+            <Eyebrow>{profile.title}</Eyebrow>
 
             {profile.location ? (
-              <Reveal mode="mount" delay={0.15}>
-                <p className="mt-8 flex items-center gap-2 text-xs tracking-[0.08em] text-subtle uppercase">
-                  <MapPin size={13} aria-hidden />
-                  {profile.location}
-                </p>
-              </Reveal>
+              <p className="hidden items-center gap-2 text-xs tracking-[0.08em] text-subtle uppercase sm:flex">
+                <MapPin size={13} aria-hidden />
+                {profile.location}
+              </p>
             ) : null}
           </div>
+        </Reveal>
 
-          {/* Portrait — centre column */}
+        {/* Main hero composition */}
+        <div className="relative mt-14 lg:mt-10 lg:min-h-[610px]">
+          {/* Portrait
+              Desktop: large, centered-left, behind the name.
+              Mobile: normal image in the flow. */}
           {photo ? (
-            <Reveal mode="mount" delay={0.05} className="lg:col-span-3">
-              <div className="relative mx-auto w-full max-w-xs lg:max-w-none">
+            <Reveal
+              mode="mount"
+              delay={0.05}
+              className="
+                relative z-10 mx-auto w-[78%] max-w-sm
+                sm:w-[55%]
+                lg:absolute lg:top-[-80px] lg:left-[24%]
+                lg:w-[46%] lg:max-w-none
+              "
+            >
+              <div className="relative">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   width={photo.width}
                   height={photo.height}
                   priority
-                  sizes="(min-width: 1024px) 18rem, (min-width: 640px) 20rem, 80vw"
-                  className="aspect-4/5 h-auto w-full object-cover"
+                  sizes="(min-width: 1024px) 38vw, (min-width: 640px) 55vw, 78vw"
+                  className="h-auto w-full object-contain"
+                />
+
+                {/* Softly blend the bottom of the portrait into the hero */}
+                <div
+                  aria-hidden
+                  className="
+                    pointer-events-none absolute right-0 bottom-0 left-0
+                    h-[22%]
+                    bg-linear-to-b from-transparent to-bg
+                  "
                 />
               </div>
             </Reveal>
           ) : null}
 
-          {/* Introduction — right */}
-          <div className="lg:col-span-4">
-            <Reveal mode="mount" delay={0.1}>
+          {/* Giant name */}
+          <Reveal
+            mode="mount"
+            delay={0.08}
+            className="
+              relative z-20 mt-[-2rem]
+              sm:mt-[-4rem]
+              lg:absolute lg:top-[105px] lg:left-0 lg:mt-0
+              lg:w-[67%]
+            "
+          >
+            <h1
+              className="
+                text-[clamp(4rem,9.2vw,8.5rem)]
+                font-semibold
+                leading-[0.9]
+                tracking-[-0.065em]
+                text-fg
+              "
+            >
+              {profile.name}
+              <span className="text-accent">.</span>
+            </h1>
+          </Reveal>
+
+          {/* Introduction — stays safely on the right */}
+          <div
+            className="
+              relative z-30 mt-12
+              sm:mt-16
+              lg:absolute lg:top-[175px] lg:right-0 lg:mt-0
+              lg:w-[31%]
+            "
+          >
+            <Reveal mode="mount" delay={0.15}>
               <Eyebrow>Introduction</Eyebrow>
             </Reveal>
 
-            <Reveal mode="mount" delay={0.15}>
-              <p className="mt-6 text-h3 font-medium text-fg">{profile.title}</p>
-            </Reveal>
-
             <Reveal mode="mount" delay={0.2}>
-              <p className="mt-5 text-lead text-muted">{profile.shortBio}</p>
+              <p className="mt-6 text-lead text-muted">
+                {profile.shortBio}
+              </p>
             </Reveal>
 
             <Reveal mode="mount" delay={0.25}>
@@ -79,6 +121,7 @@ export function Hero() {
                   My work
                   <ArrowRight size={16} aria-hidden />
                 </Button>
+
                 <Button href="/resume" variant="ghost">
                   Resume
                   <ArrowRight size={16} aria-hidden />
@@ -89,12 +132,35 @@ export function Hero() {
             {profile.availability ? (
               <Reveal mode="mount" delay={0.3}>
                 <p className="mt-8 flex items-center gap-2.5 text-xs tracking-[0.08em] text-subtle uppercase">
-                  <span aria-hidden className="h-1.5 w-1.5 rounded-pill bg-accent" />
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full bg-accent"
+                  />
                   {profile.availability}
                 </p>
               </Reveal>
             ) : null}
           </div>
+
+          {/* Socials — bottom left */}
+          <Reveal
+            mode="mount"
+            delay={0.2}
+            className="
+              relative z-30 mt-12
+              lg:absolute lg:bottom-[25px] lg:left-0 lg:mt-0
+            "
+          >
+            <div aria-hidden className="h-[3px] w-12 bg-accent" />
+            <SocialLinks className="mt-7" />
+
+            {profile.location ? (
+              <p className="mt-7 flex items-center gap-2 text-xs tracking-[0.08em] text-subtle uppercase sm:hidden">
+                <MapPin size={13} aria-hidden />
+                {profile.location}
+              </p>
+            ) : null}
+          </Reveal>
         </div>
       </Container>
     </section>
