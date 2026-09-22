@@ -16,9 +16,10 @@ export const experience: ExperienceEntry[] = [
     description:
       "Building full-stack web applications with CodeIgniter, Node.js (Express), MySQL, SSMS and Docker.",
     achievements: [
-      "Introduced the Git version control system to the team, leading to faster development cycles",
-      "Introduced Docker for containerisation, simplifying application deployment and environment consistency",
-      "Integrated Git CI/CD pipelines, including Docker",
+      "Developed full-stack web applications for internal use",
+      "Introduced the Git version control to legacy systems, leading to faster development cycles",
+      "Introduced Docker for containerisation to legacy systems, simplifying application deployment and environment consistency",
+      "Improved the development workflow by integrating Git CI/CD pipelines, including Docker",
     ],
     technologies: [
       "CodeIgniter",

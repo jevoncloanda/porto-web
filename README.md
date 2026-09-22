@@ -183,16 +183,50 @@ architecture out of the body unless you have written permission.
 
 ## Resume and PDF
 
-`/resume` renders a real A4 document (210 × 297 mm) from the same content as the rest of
-the site, plus `content/resume.ts` for education and certifications.
+`/resume` is the only resume template. `ResumeDocument` reads the shared profile,
+experience and skills content plus `content/resume.ts` for resume-only education,
+organization and certification entries. The downloadable PDF is generated from this
+same route; it has no second template or data file.
 
-To produce a PDF: open `/resume` → **Print / Save as PDF** → choose *Save as PDF*.
-Navigation, footer and the buttons are removed from the printed output by
-`@media print` rules in `src/app/resume/resume.css`; that file also holds the `@page`
-size and margins and the page-break rules. There is no headless browser or PDF service.
+The page exposes two separate actions:
 
-To force a page break at a specific point, add `className="resume-page-break"` to an
-element in `src/components/resume/ResumeDocument.tsx`.
+- **Print** opens the browser print dialog. Browser header/footer settings remain under
+  user control.
+- **Download PDF** downloads `public/Jevon-Christopher-Loanda-Resume.pdf`.
+
+Print geometry lives in `src/app/resume/resume.css`. It defines A4 paper, margins,
+two-page pagination and page-break protection. Navigation, footer and page controls are
+removed through the existing `print:hidden` rules.
+
+### Regenerate the resume PDF
+
+Install Playwright's pinned Chromium build once after installing npm dependencies:
+
+```bash
+npm run playwright:install
+```
+
+Then regenerate the static PDF:
+
+```bash
+npm run resume:pdf
+```
+
+The generator reuses a running local portfolio server on ports 3000–3010 when one is
+available. Otherwise it starts a temporary Next.js development server on a free local
+port and stops it after generation. It waits for web fonts, uses A4 print CSS, preserves
+backgrounds, and disables Chromium's generated headers and footers.
+
+`npm run build` and `npm run build:vinext` invoke `resume:pdf` through their npm
+pre-build lifecycle hooks, so the static asset is refreshed before the application is
+built and cannot be silently stale. Build machines must have the Playwright Chromium
+binary installed. In Linux CI environments that lack Chromium system libraries, use:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
+No PDF runtime, API route or deployed browser process is required.
 
 ---
 

@@ -29,11 +29,12 @@ interface CommonProps {
   className?: string;
 }
 
-type ButtonAsLink = CommonProps & {
-  href: string;
-  /** Set for links that leave the site. */
-  external?: boolean;
-};
+type ButtonAsLink = CommonProps &
+  Omit<ComponentPropsWithoutRef<"a">, "children" | "className" | "href"> & {
+    href: string;
+    /** Set for links that leave the site. */
+    external?: boolean;
+  };
 
 type ButtonAsButton = CommonProps &
   Omit<ComponentPropsWithoutRef<"button">, "className" | "children">;
@@ -44,19 +45,33 @@ function isLink(props: ButtonAsLink | ButtonAsButton): props is ButtonAsLink {
 
 export function Button(props: ButtonAsLink | ButtonAsButton) {
   if (isLink(props)) {
-    const { children, variant = "primary", size = "md", className, href, external } = props;
+    const {
+      children,
+      variant = "primary",
+      size = "md",
+      className,
+      href,
+      external,
+      ...rest
+    } = props;
     const classes = cn(BASE, VARIANTS[variant], SIZES[size], className);
 
-    if (external) {
+    if (external || rest.download) {
       return (
-        <a href={href} target="_blank" rel="noreferrer noopener" className={classes}>
+        <a
+          {...rest}
+          href={href}
+          target={external ? "_blank" : rest.target}
+          rel={external ? "noreferrer noopener" : rest.rel}
+          className={classes}
+        >
           {children}
         </a>
       );
     }
 
     return (
-      <Link href={href} className={classes}>
+      <Link {...rest} href={href} className={classes}>
         {children}
       </Link>
     );

@@ -21,7 +21,7 @@ function ContactLine() {
   }));
 
   return (
-    <div className="mt-4 text-[0.8125rem] text-neutral-600">
+    <div className="resume-contact mt-4 text-[0.8125rem] text-neutral-600">
       {profile.location ? <p>{profile.location}</p> : null}
       <ul className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
         {items.map((item, index) => (
@@ -109,12 +109,12 @@ export function ResumeDocument() {
       ) : null}
 
       {skills.length > 0 ? (
-        <ResumeSection title="Skills">
+        <ResumeSection title="Skills" className="resume-page-break">
           <dl className="space-y-2.5">
             {skills.map((category) => (
               <div
                 key={category.title}
-                className="resume-block flex flex-col gap-0.5 sm:flex-row sm:gap-4"
+                className="resume-block resume-skill-row flex flex-col gap-0.5 sm:flex-row sm:gap-4"
               >
                 <dt className="text-[0.875rem] font-medium text-neutral-900 sm:w-32 sm:shrink-0">
                   {category.title}

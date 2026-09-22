@@ -15,7 +15,7 @@ import type {
 export const education: EducationEntry[] = [
   {
     institution: "Universitas Bina Nusantara",
-    qualification: "Undergraduate, Computer Science",
+    qualification: "Bachelor of Computer Science (S.Kom.)",
     period: "Sep 2021 — May 2025",
     location: "Jakarta, Indonesia",
     description: "GPA 3.89 / 4.00",

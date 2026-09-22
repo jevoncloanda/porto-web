@@ -30,7 +30,7 @@ export const skills: SkillCategory[] = [
   },
   {
     title: "Security & QA",
-    items: ["Burp Suite", "OWASP ZAP", "UAT"],
+    items: ["Burp Suite", "OWASP ZAP"],
   },
   {
     title: "Languages",

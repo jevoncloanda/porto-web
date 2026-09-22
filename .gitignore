@@ -26,3 +26,6 @@ yarn-error.log*
 # env
 .env
 .env*.local
+/dist/
+.vinext/
+.wrangler/

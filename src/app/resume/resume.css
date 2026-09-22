@@ -12,6 +12,11 @@
   padding: 16mm 15mm;
   background: #ffffff;
   color: #111315;
+  overflow-wrap: break-word;
+}
+
+.resume-contact a {
+  overflow-wrap: anywhere;
 }
 
 /* Below the width of an A4 sheet, reflow instead of scrolling sideways. */
@@ -55,11 +60,13 @@
 @page {
   size: A4;
   margin: 14mm 14mm;
+  background: #ffffff;
 }
 
 @media print {
   .resume-sheet {
-    width: auto;
+    width: 100%;
+    max-width: none;
     min-height: 0;
     padding: 0;
     border: 0;
@@ -67,19 +74,60 @@
     box-shadow: none;
     background: #ffffff;
     color: #000000;
+    overflow: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   /* Section headings should not be stranded at the bottom of a page. */
   .resume-section {
     break-inside: auto;
+    orphans: 3;
+    widows: 3;
   }
 
   .resume-section > h2 {
-    break-after: avoid;
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  .resume-section > h2 + div {
+    break-before: avoid-page;
+  }
+
+  .resume-block {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .resume-section p,
+  .resume-section li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Print geometry stays stable regardless of the browser viewport. */
+  .resume-entry-heading {
+    grid-template-columns: minmax(0, 1fr) max-content;
+  }
+
+  .resume-entry-date {
+    text-align: right;
+  }
+
+  .resume-skill-row {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .resume-skill-row > dt {
+    width: 8rem;
+    flex-shrink: 0;
   }
 
   /* Force a new page where the content explicitly asks for one. */
   .resume-page-break {
     break-before: page;
+    page-break-before: always;
   }
 }

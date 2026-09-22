@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Download } from "lucide-react";
 
 import { PrintButton } from "@/components/resume/PrintButton";
 import { ResumeDocument } from "@/components/resume/ResumeDocument";
@@ -25,13 +26,21 @@ export default function ResumePage() {
             <Eyebrow>Resume</Eyebrow>
             <h1 className="mt-6 text-h1 font-semibold text-fg">{profile.name}</h1>
             <p className="mt-4 text-lead text-muted">
-              Formatted for A4. Use the button to print or save it as a PDF — the
-              page controls are removed from the printed document.
+              Formatted for A4. Print from the browser or download the generated PDF —
+              page controls are removed from both outputs.
             </p>
           </div>
 
           <div className="flex shrink-0 flex-wrap gap-3">
             <PrintButton />
+            <Button
+              href="/Jevon-Christopher-Loanda-Resume.pdf"
+              download="Jevon-Christopher-Loanda-Resume.pdf"
+              variant="secondary"
+            >
+              <Download size={16} aria-hidden />
+              Download PDF
+            </Button>
             <Button href="/" variant="secondary">
               Back to site
             </Button>
