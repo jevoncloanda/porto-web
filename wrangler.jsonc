@@ -23,5 +23,11 @@
   },
   "cache": {
     "enabled": false
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
   }
 }
