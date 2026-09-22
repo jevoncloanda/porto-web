@@ -62,7 +62,7 @@ export function ResumeDocument() {
 
       {experience.length > 0 ? (
         <ResumeSection title="Experience">
-          <ol className="space-y-6">
+          <ol className="resume-experience-list space-y-6">
             {experience.map((entry, index) => (
               <li key={`${entry.company}-${index}`} className="resume-block">
                 <div className="resume-entry-heading">

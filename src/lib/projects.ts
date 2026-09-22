@@ -1,8 +1,7 @@
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
 import { cache } from "react";
 import matter from "gray-matter";
 
+import { projectSources } from "@/generated/project-sources";
 import {
   PROJECT_TYPES,
   type Project,
@@ -12,7 +11,6 @@ import {
   type ProjectType,
 } from "@/lib/types";
 
-const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");
 const MDX_EXTENSION = ".mdx";
 
 function isProjectType(value: unknown): value is ProjectType {
@@ -100,27 +98,11 @@ function byRecency(a: ProjectMeta, b: ProjectMeta): number {
   return a.title.localeCompare(b.title);
 }
 
-async function readProjectFiles(): Promise<string[]> {
-  try {
-    const entries = await readdir(PROJECTS_DIR, { withFileTypes: true });
-    return entries
-      .filter((entry) => entry.isFile() && entry.name.endsWith(MDX_EXTENSION))
-      .map((entry) => entry.name);
-  } catch {
-    // No content directory yet — the site should still build.
-    console.warn(`[projects] No project content found at ${PROJECTS_DIR}.`);
-    return [];
-  }
-}
-
 /** Every project, including its MDX body. Cached per request/render pass. */
 export const getAllProjects = cache(async (): Promise<Project[]> => {
-  const files = await readProjectFiles();
-
   const projects = await Promise.all(
-    files.map(async (file): Promise<Project | null> => {
+    Object.entries(projectSources).map(async ([file, raw]): Promise<Project | null> => {
       const slug = file.slice(0, -MDX_EXTENSION.length);
-      const raw = await readFile(path.join(PROJECTS_DIR, file), "utf8");
       const { data, content } = matter(raw);
 
       const meta = normalize(slug, data as Partial<ProjectFrontmatter>);

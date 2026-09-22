@@ -62,7 +62,7 @@ src/
 │   └── ui/               Button, Container, Section, Eyebrow, Reveal, Notice, …
 └── lib/
     ├── types.ts          the content model — one source of truth for shapes
-    ├── projects.ts       reads content/projects/*.mdx at build time
+    ├── projects.ts       reads bundled project MDX generated before builds
     ├── placeholder.ts    detects `[BRACKETED]` placeholders
     ├── social.ts         contact channels derived from the profile
     └── seo.ts            metadata helpers
@@ -108,6 +108,10 @@ hides its whole section.
 
 3. That's it. The homepage, the projects index, the filters, the sitemap and the
    case-study route pick it up automatically. No component code changes.
+
+`npm run dev`, `npm run build`, `npm run dev:vinext` and `npm run build:vinext`
+regenerate `src/generated/project-sources.ts` from these files. Deployed Workers read
+that bundled manifest and never depend on repository filesystem access at runtime.
 
 ### Frontmatter
 
@@ -185,8 +189,9 @@ architecture out of the body unless you have written permission.
 
 `/resume` is the only resume template. `ResumeDocument` reads the shared profile,
 experience and skills content plus `content/resume.ts` for resume-only education,
-organization and certification entries. `/resume.pdf` renders that same page through
-Cloudflare Browser Rendering; it has no second template, data file or generated asset.
+organization and certification entries. The deployment pipeline renders that same page
+once through Cloudflare Browser Run and publishes the result as static `/resume.pdf`.
+There is no second resume template or request-time browser launch.
 
 The page exposes two separate actions:
 
@@ -199,24 +204,17 @@ Print geometry lives in `src/app/resume/resume.css`. It defines A4 paper, margin
 two-page pagination and page-break protection. Navigation, footer and page controls are
 removed through the existing `print:hidden` rules.
 
-The route uses the `BROWSER` binding from `wrangler.jsonc` and the official
-`@cloudflare/playwright` Worker integration. It waits for the resume and web fonts, then
-generates two-page A4 output with backgrounds enabled and browser headers/footers
-disabled. PDF generation happens on demand; builds do not launch or install Chromium.
+`npm run deploy:vinext` uploads the built Worker as a staged version, renders that exact
+version's `/resume` route through Cloudflare's PDF REST API, writes the result to
+`dist/client/resume.pdf`, and then deploys production once. This ordering keeps PDF and
+HTML synchronized without installing Chromium or briefly deploying incomplete assets.
+Print media, A4 CSS, backgrounds and disabled browser headers/footers are preserved.
 
 ### Local and production behavior
 
-Ordinary `npm run dev` remains suitable for portfolio and `/resume` HTML development.
-Cloudflare Browser Rendering is not available in the plain Next.js runtime, so exercise
-`/resume.pdf` through an authenticated Cloudflare/vinext environment:
-
-```bash
-npm run dev:vinext
-```
-
-The Wrangler browser binding uses remote mode locally. Authenticate with `wrangler
-login` and ensure Browser Rendering is enabled for the Cloudflare account. Production
-builds need no browser packages or Linux browser libraries:
+Ordinary `npm run dev` and `npm run dev:vinext` remain suitable for HTML development.
+The static PDF is created only during deployment. Production builds need no browser
+binary or Linux browser libraries:
 
 ```bash
 npm run build:vinext
@@ -224,8 +222,15 @@ npm run deploy:vinext
 ```
 
 For Cloudflare Workers Builds, use `npm run build:vinext` as the build command and
-`npm run deploy:vinext` as the deploy command. Configure `CLOUDFLARE_ACCOUNT_ID` and a
-`CLOUDFLARE_API_TOKEN` with Workers deployment permissions in CI.
+`npm run deploy:vinext` as the deploy command. Configure:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN` with Workers deployment permissions and account-level
+  **Browser Rendering - Edit** permission
+
+Wrangler version preview URLs must remain enabled; `wrangler.jsonc` declares this
+explicitly. Secrets stay in Cloudflare configuration and must never enter repository
+files.
 
 ---
 
@@ -271,6 +276,10 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
 It falls back to `http://localhost:3000` when unset. See `.env.example`.
+
+Cloudflare deployment additionally requires `CLOUDFLARE_ACCOUNT_ID` and
+`CLOUDFLARE_API_TOKEN` as described in the resume deployment section. They are CI-only
+credentials, not public Next.js variables.
 
 ---
 
