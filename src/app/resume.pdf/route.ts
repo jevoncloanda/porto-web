@@ -22,6 +22,20 @@ export async function GET(request: Request): Promise<Response> {
     await page.emulateMedia({ media: "print" });
     await page.evaluate(() => document.fonts.ready);
 
+    const backgrounds = await page.evaluate(() => {
+      const main = document.querySelector("#main");
+      const sheet = document.querySelector(".resume-sheet");
+
+      return {
+        html: getComputedStyle(document.documentElement).backgroundColor,
+        body: getComputedStyle(document.body).backgroundColor,
+        main: main ? getComputedStyle(main).backgroundColor : null,
+        sheet: sheet ? getComputedStyle(sheet).backgroundColor : null,
+      };
+    });
+
+    console.log("Resume PDF backgrounds:", backgrounds);
+
     const sheet = page.locator(".resume-sheet");
     if ((await sheet.count()) !== 1) {
       throw new Error("Expected exactly one .resume-sheet on /resume.");
