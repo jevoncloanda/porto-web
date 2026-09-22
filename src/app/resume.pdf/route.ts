@@ -19,6 +19,7 @@ export async function GET(request: Request): Promise<Response> {
       waitUntil: "networkidle",
       timeout: 120_000,
     });
+    await page.emulateMedia({ media: "print" });
     await page.evaluate(() => document.fonts.ready);
 
     const sheet = page.locator(".resume-sheet");
