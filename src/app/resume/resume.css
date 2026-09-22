@@ -64,6 +64,13 @@
 }
 
 @media print {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+  }
+
   .resume-sheet {
     width: 100%;
     max-width: none;
