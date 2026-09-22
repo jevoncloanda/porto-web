@@ -21,7 +21,7 @@ export interface ProfileLinks {
   linkedin: string;
   /** Optional extras — omit the key entirely when unused. */
   x?: string;
-  website?: string;
+  website: string;
 }
 
 export interface Profile {

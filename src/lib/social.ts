@@ -1,7 +1,7 @@
 import { resolveHref } from "@/lib/placeholder";
 import { profile } from "@content/profile";
 
-export type SocialKind = "email" | "github" | "linkedin";
+export type SocialKind = "email" | "website" | "github" | "linkedin";
 
 export interface SocialEntry {
   kind: SocialKind;
@@ -24,6 +24,7 @@ function displayUrl(value: string): string {
  */
 export function getSocialEntries(): SocialEntry[] {
   const email = resolveHref(profile.email, "email");
+  const website = resolveHref(profile.links.website);
   const github = resolveHref(profile.links.github);
   const linkedin = resolveHref(profile.links.linkedin);
 
@@ -33,6 +34,12 @@ export function getSocialEntries(): SocialEntry[] {
       label: "Email",
       value: profile.email,
       href: email,
+    },
+    {
+      kind: "website",
+      label: "Website",
+      value: website ? displayUrl(website) : profile.links.website,
+      href: website,
     },
     {
       kind: "github",

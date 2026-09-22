@@ -36,6 +36,7 @@ export const profile: Profile = {
   availability: "Currently at Harita Group",
 
   links: {
+    website: "https://jevoncl.com",
     github: "https://github.com/jevoncloanda",
     linkedin: "https://linkedin.com/in/jevoncl",
   },

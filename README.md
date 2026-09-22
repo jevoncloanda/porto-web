@@ -185,48 +185,47 @@ architecture out of the body unless you have written permission.
 
 `/resume` is the only resume template. `ResumeDocument` reads the shared profile,
 experience and skills content plus `content/resume.ts` for resume-only education,
-organization and certification entries. The downloadable PDF is generated from this
-same route; it has no second template or data file.
+organization and certification entries. `/resume.pdf` renders that same page through
+Cloudflare Browser Rendering; it has no second template, data file or generated asset.
 
 The page exposes two separate actions:
 
 - **Print** opens the browser print dialog. Browser header/footer settings remain under
   user control.
-- **Download PDF** downloads `public/Jevon-Christopher-Loanda-Resume.pdf`.
+- **Download PDF** requests `/resume.pdf`, which returns
+  `Jevon-Christopher-Loanda-Resume.pdf` as an attachment.
 
 Print geometry lives in `src/app/resume/resume.css`. It defines A4 paper, margins,
 two-page pagination and page-break protection. Navigation, footer and page controls are
 removed through the existing `print:hidden` rules.
 
-### Regenerate the resume PDF
+The route uses the `BROWSER` binding from `wrangler.jsonc` and the official
+`@cloudflare/playwright` Worker integration. It waits for the resume and web fonts, then
+generates two-page A4 output with backgrounds enabled and browser headers/footers
+disabled. PDF generation happens on demand; builds do not launch or install Chromium.
 
-Install Playwright's pinned Chromium build once after installing npm dependencies:
+### Local and production behavior
 
-```bash
-npm run playwright:install
-```
-
-Then regenerate the static PDF:
-
-```bash
-npm run resume:pdf
-```
-
-The generator reuses a running local portfolio server on ports 3000–3010 when one is
-available. Otherwise it starts a temporary Next.js development server on a free local
-port and stops it after generation. It waits for web fonts, uses A4 print CSS, preserves
-backgrounds, and disables Chromium's generated headers and footers.
-
-`npm run build` and `npm run build:vinext` invoke `resume:pdf` through their npm
-pre-build lifecycle hooks, so the static asset is refreshed before the application is
-built and cannot be silently stale. Build machines must have the Playwright Chromium
-binary installed. In Linux CI environments that lack Chromium system libraries, use:
+Ordinary `npm run dev` remains suitable for portfolio and `/resume` HTML development.
+Cloudflare Browser Rendering is not available in the plain Next.js runtime, so exercise
+`/resume.pdf` through an authenticated Cloudflare/vinext environment:
 
 ```bash
-npx playwright install --with-deps chromium
+npm run dev:vinext
 ```
 
-No PDF runtime, API route or deployed browser process is required.
+The Wrangler browser binding uses remote mode locally. Authenticate with `wrangler
+login` and ensure Browser Rendering is enabled for the Cloudflare account. Production
+builds need no browser packages or Linux browser libraries:
+
+```bash
+npm run build:vinext
+npm run deploy:vinext
+```
+
+For Cloudflare Workers Builds, use `npm run build:vinext` as the build command and
+`npm run deploy:vinext` as the deploy command. Configure `CLOUDFLARE_ACCOUNT_ID` and a
+`CLOUDFLARE_API_TOKEN` with Workers deployment permissions in CI.
 
 ---
 

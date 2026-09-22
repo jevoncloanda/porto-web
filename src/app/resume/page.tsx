@@ -34,7 +34,7 @@ export default function ResumePage() {
           <div className="flex shrink-0 flex-wrap gap-3">
             <PrintButton />
             <Button
-              href="/Jevon-Christopher-Loanda-Resume.pdf"
+              href="/resume.pdf"
               download="Jevon-Christopher-Loanda-Resume.pdf"
               variant="secondary"
             >
