@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Mail, Globe } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 import { GitHubIcon, LinkedInIcon } from "@/components/ui/BrandIcons";
@@ -7,6 +7,7 @@ import { getSocialEntries, type SocialKind } from "@/lib/social";
 
 const ICONS: Record<SocialKind, ComponentType<SVGProps<SVGSVGElement>>> = {
   email: Mail,
+  website: Globe,
   github: GitHubIcon,
   linkedin: LinkedInIcon,
 };
