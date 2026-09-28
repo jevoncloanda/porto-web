@@ -90,7 +90,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
           <div className="lg:col-span-8">
             <div className="max-w-reading">
-              <MdxContent source={project.body} />
+              <MdxContent slug={project.slug} />
             </div>
             <ProjectGallery images={meta.gallery} />
           </div>

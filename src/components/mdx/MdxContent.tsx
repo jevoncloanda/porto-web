@@ -1,12 +1,14 @@
-import { MDXRemote } from "next-mdx-remote/rsc";
-
 import { mdxComponents } from "@/components/mdx/mdx-components";
+import { projectBodies } from "@/generated/project-bodies";
 
-/** Renders a case-study body. Compiled at build time in a Server Component. */
-export function MdxContent({ source }: { source: string }) {
+/** Renders a case-study body compiled when the project manifest is generated. */
+export function MdxContent({ slug }: { slug: string }) {
+  const Body = projectBodies[slug];
+  if (!Body) return null;
+
   return (
     <div className="text-base">
-      <MDXRemote source={source} components={mdxComponents} />
+      <Body components={mdxComponents} />
     </div>
   );
 }

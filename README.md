@@ -110,8 +110,9 @@ hides its whole section.
    case-study route pick it up automatically. No component code changes.
 
 `npm run dev`, `npm run build`, `npm run dev:vinext` and `npm run build:vinext`
-regenerate `src/generated/project-sources.ts` from these files. Deployed Workers read
-that bundled manifest and never depend on repository filesystem access at runtime.
+regenerate `src/generated/project-sources.ts` and compiled project bodies from these
+files. Deployed Workers use the bundled content without filesystem access or MDX
+compilation at request time.
 
 ### Frontmatter
 
