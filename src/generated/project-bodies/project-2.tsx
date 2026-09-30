@@ -4,55 +4,86 @@
 import {Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs} from "react/jsx-runtime";
 function _createMdxContent(props) {
   const _components = {
+    code: "code",
     h2: "h2",
     p: "p",
-    strong: "strong",
     ...props.components
-  }, {Callout, PortalActionManagement, PortalIncidentLifecycle, PortalWorkflowMap} = _components;
+  }, {Callout, Figure, PadelPriceTrackingFlow} = _components;
   if (!Callout) _missingMdxReference("Callout", true);
-  if (!PortalActionManagement) _missingMdxReference("PortalActionManagement", true);
-  if (!PortalIncidentLifecycle) _missingMdxReference("PortalIncidentLifecycle", true);
-  if (!PortalWorkflowMap) _missingMdxReference("PortalWorkflowMap", true);
+  if (!Figure) _missingMdxReference("Figure", true);
+  if (!PadelPriceTrackingFlow) _missingMdxReference("PadelPriceTrackingFlow", true);
   return _jsxs(_Fragment, {
     children: [_jsx(_components.h2, {
       children: "Overview"
+    }), "\n", _jsx(_components.p, {
+      children: "PadelPrice is a personal, locally run price-tracking application for padel rackets. I built it to turn inconsistent seller listings into canonical products, retain each price observation, schedule future checks, and make price changes actionable through alert rules. Tokopedia search currently runs through ReefAPI, a third-party data provider."
+    }), "\n", _jsx(Figure, {
+      src: "/projects/padel-price/dashboard.png",
+      alt: "PadelPrice dashboard with five tracked products and separate counts for 28 live and 504 demo observations",
+      caption: "Local dashboard after demo seeding. Product cards distinguish live prices from demo-only previews; the counts show 28 live and 504 synthetic observations in this local sample.",
+      fit: "contain"
+    }), "\n", _jsx(_components.h2, {
+      children: "The Identity Problem"
     }), "\n", _jsxs(_components.p, {
-      children: ["Portal HSE is a ", _jsx(_components.strong, {
-        children: "team-built"
-      }), " internal platform for connected Health, Safety, and Environment workflows. My contribution covered Incident Reporting, Incident Investigation, HSE Governance, Inspection Reporting, Hazard Reporting, Action Management, and HSE Performance / Insights. Other modules in the wider platform were built by teammates."]
+      children: ["Marketplace titles mix model names, versions, materials, years, and seller shorthand. A near match can be a different racket. PadelPrice normalizes Tokopedia results, then applies domain-focused deterministic rules to brand, model, family, carbon, Alum, edition, and year. Results are classified as ", _jsx(_components.code, {
+        children: "MATCH"
+      }), ", ", _jsx(_components.code, {
+        children: "RELATED_VARIANT"
+      }), ", ", _jsx(_components.code, {
+        children: "UNCERTAIN"
+      }), ", or ", _jsx(_components.code, {
+        children: "MISMATCH"
+      }), "; only confident matches are tracked."]
     }), "\n", _jsx(_components.p, {
-      children: "The engineering story is not a catalogue of forms. It is how source-specific records move through reporting, investigation, follow-up, closure, and analysis without losing their domain rules or ownership."
-    }), "\n", _jsx(PortalWorkflowMap, {}), "\n", _jsx(_components.h2, {
-      children: "Connected Operational Workflows"
-    }), "\n", _jsx(_components.p, {
-      children: "The server-rendered Node.js application uses Express and EJS with MySQL persistence and Redis-backed sessions. Operational modules own their workflows and transactional writes; supporting services provide uploads, notifications, exports, reminders, and Chart.js reporting."
-    }), "\n", _jsx(_components.p, {
-      children: "Action Management is the cross-module integration point. It presents a common operational view over incident investigation actions, negative inspection findings, hazard follow-ups, and manually created actions. The shared view normalizes source, document reference, action, PIC, due date, and status while updates return to the originating record."
+      children: "This is a deliberately limited rule set, not an LLM or a general product-identity engine. Missing attributes and unfamiliar editions still require review."
+    }), "\n", _jsx(Figure, {
+      src: "/projects/padel-price/search-matching.png",
+      alt: "Tokopedia search results with interpreted NOX product attributes and Match or Uncertain labels on seller listings",
+      caption: "Search onboarding shows the interpreted product identity and why listings receive their classifications before tracking.",
+      fit: "contain"
     }), "\n", _jsx(_components.h2, {
-      children: "Incident & Investigation Lifecycle"
+      children: "Tracking Architecture"
+    }), "\n", _jsx(PadelPriceTrackingFlow, {}), "\n", _jsxs(_components.p, {
+      children: ["The provider boundary keeps marketplace acquisition replaceable, while the current active path remains Tokopedia through ReefAPI. A ", _jsx(_components.code, {
+        children: "CanonicalProduct"
+      }), " represents the racket identity; multiple ", _jsx(_components.code, {
+        children: "MarketplaceListing"
+      }), " records represent seller offers. Provider ID and URL constraints protect listing identity. Each successful observation appends a ", _jsx(_components.code, {
+        children: "PriceSnapshot"
+      }), " instead of replacing the previous price. Listing updates, snapshot creation, and alert evaluation run in a database transaction."]
     }), "\n", _jsx(_components.p, {
-      children: "Saving an incident also creates its linked investigation record. Status is derived from investigation completeness, then progresses through classification-based approvals and an explicit close action."
-    }), "\n", _jsx(PortalIncidentLifecycle, {}), "\n", _jsx(_components.p, {
-      children: "HIPO incidents use the major approval level; near misses use the minor level. Approval access follows configured role and department requirements. Incident notification remains a separate concern, so authorized send—or an explicit decision not to send—does not masquerade as a lifecycle gate."
+      children: "Tracking intent lives in PostgreSQL. BullMQ job schedulers and Redis move recurring searches to a separate worker; a per-product deduplication key prevents equivalent pending refresh jobs. The Next.js dashboard reads the persisted products, listings, prices, rules, and notification states."
+    }), "\n", _jsx(Figure, {
+      src: "/projects/padel-price/product-detail.png",
+      alt: "NOX AT10 product detail showing a selected seller listing's chart, live price, and matched listings",
+      caption: "The chart follows one selected listing, not a market-wide historical minimum. Dashed history is synthetic demo data; live observations are shown separately.",
+      fit: "contain"
     }), "\n", _jsx(_components.h2, {
-      children: "Centralized Action Management"
-    }), "\n", _jsx(PortalActionManagement, {}), "\n", _jsx(_components.p, {
-      children: "The shared action list is a union-shaped read model, not a second copy of every source record. Source-discriminated updates change due dates and statuses in the relevant incident action, inspection finding, hazard report, or standalone action. Users can navigate back to the origin, add completion evidence and notes, and review status history."
-    }), "\n", _jsx(_components.p, {
-      children: "Open items past their due date display as overdue. A scheduled reminder selects non-closed items that are approaching or past due and notifies the assigned PIC when an email is available. Completing an action updates its source row; it does not automatically close a parent incident."
+      children: "Alerts & Delivery State"
+    }), "\n", _jsxs(_components.p, {
+      children: ["Target-price, percentage-drop, and any-drop rules evaluate against each listing's previous live observation. A triggered rule creates a deduplicated ", _jsx(_components.code, {
+        children: "NotificationEvent"
+      }), " alongside its snapshot. Delivery then moves through explicit pending, sending, sent, failed, or skipped states. Telegram credentials are optional for the local application; missing credentials produce a visible skipped state rather than a claimed send."]
+    }), "\n", _jsx(Figure, {
+      src: "/projects/padel-price/alerts.png",
+      alt: "PadelPrice alert rules and recent notification panel showing an enabled target-price rule and a sent event",
+      caption: "Rules and delivery history remain visible on the product page. The shown sent event is a local verification, not evidence of continuous production operation.",
+      fit: "contain"
     }), "\n", _jsx(_components.h2, {
-      children: "Governance & Insights"
+      children: "Data-Source & Demo Boundaries"
     }), "\n", _jsx(_components.p, {
-      children: "HSE Governance manages controlled-document metadata, uploads, sequential review and approval, revision requests, publication, and obsolescence. It remains separate from Action Management because no verified integration between those workflows exists."
-    }), "\n", _jsx(_components.p, {
-      children: "HSE Performance / Insights is the analytical read side. Live database queries aggregate current incident, governance, inspection, hazard, and action records into module-specific counts and distributions, including investigation status and overdue work. The wider team-built dashboard also contains analytical areas outside my contribution; those are not presented here as my implementation."
-    }), "\n", _jsx(_components.h2, {
-      children: "Result"
-    }), "\n", _jsx(_components.p, {
-      children: "The result is a production internal platform connecting operational reporting, controlled workflows, follow-up ownership, and management visibility. No approved public impact metrics exist, so this case study does not claim time savings, incident reduction, user counts, or performance gains."
+      children: "I investigated Blibli and Lazada without enabling them as tracking sources. Direct Blibli access encountered marketplace verification; a third-party API returned search and detail data, but I could not independently verify current price accuracy, price meaning, freshness, or repeatability. Keeping that integration experimental protects the meaning of the stored history."
+    }), "\n", _jsxs(_components.p, {
+      children: ["Because PadelPrice runs locally, its portfolio charts also need an honest demonstration path. A deterministic seed creates 14 days of synthetic observations across five products and 18 listing histories. ", _jsx(_components.code, {
+        children: "PriceSnapshot.source"
+      }), " distinguishes ", _jsx(_components.code, {
+        children: "DEMO"
+      }), " from ", _jsx(_components.code, {
+        children: "LIVE"
+      }), ", with demo flags on seed-only products and listings. The seed and reset paths preserve live observations; demo history does not trigger alerts or Telegram delivery."]
     }), "\n", _jsx(Callout, {
       children: _jsx(_components.p, {
-        children: "All records and interface examples shown here are fictional. No production incident, employee, hazard, inspection, corrective action, or company data is published."
+        children: "PadelPrice is a local portfolio project. Synthetic history demonstrates the tracking experience; it is not a record of marketplace prices observed on those dates."
       })
     })]
   });

@@ -3,9 +3,11 @@ import type { ComponentType } from "react";
 import ProjectBody0 from "./project-bodies/project-0";
 import ProjectBody1 from "./project-bodies/project-1";
 import ProjectBody2 from "./project-bodies/project-2";
+import ProjectBody3 from "./project-bodies/project-3";
 
 export const projectBodies: Readonly<Record<string, ComponentType<{ components?: Record<string, unknown> }>>> = {
   "email-migration": ProjectBody0,
   "notification-center": ProjectBody1,
-  "portal-hse": ProjectBody2,
+  "padel-price": ProjectBody2,
+  "portal-hse": ProjectBody3,
 };

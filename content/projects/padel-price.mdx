@@ -1,0 +1,85 @@
+---
+title: "PadelPrice"
+subtitle: "From noisy marketplace listings to traceable racket price history"
+summary: "A local price-intelligence pipeline for padel rackets: Tokopedia search, deterministic product matching, persistent price observations, scheduled refreshes, and Telegram alerts."
+year: 2026
+type: personal
+category: "Marketplace Intelligence"
+role: "Design & full-stack development"
+featured: false
+confidential: false
+placeholder: false
+order: 2
+stack:
+  - "TypeScript"
+  - "Next.js"
+  - "PostgreSQL"
+  - "Prisma 7"
+  - "Redis"
+  - "BullMQ"
+  - "ReefAPI"
+  - "Telegram Bot API"
+  - "Recharts"
+cover: /projects/padel-price/dashboard.png
+coverAlt: "PadelPrice local dashboard separating live marketplace observations from demo observations and labeling demo-only products"
+---
+
+## Overview
+
+PadelPrice is a personal, locally run price-tracking application for padel rackets. I built it to turn inconsistent seller listings into canonical products, retain each price observation, schedule future checks, and make price changes actionable through alert rules. Tokopedia search currently runs through ReefAPI, a third-party data provider.
+
+<Figure
+  src="/projects/padel-price/dashboard.png"
+  alt="PadelPrice dashboard with five tracked products and separate counts for 28 live and 504 demo observations"
+  caption="Local dashboard after demo seeding. Product cards distinguish live prices from demo-only previews; the counts show 28 live and 504 synthetic observations in this local sample."
+  fit="contain"
+/>
+
+## The Identity Problem
+
+Marketplace titles mix model names, versions, materials, years, and seller shorthand. A near match can be a different racket. PadelPrice normalizes Tokopedia results, then applies domain-focused deterministic rules to brand, model, family, carbon, Alum, edition, and year. Results are classified as `MATCH`, `RELATED_VARIANT`, `UNCERTAIN`, or `MISMATCH`; only confident matches are tracked.
+
+This is a deliberately limited rule set, not an LLM or a general product-identity engine. Missing attributes and unfamiliar editions still require review.
+
+<Figure
+  src="/projects/padel-price/search-matching.png"
+  alt="Tokopedia search results with interpreted NOX product attributes and Match or Uncertain labels on seller listings"
+  caption="Search onboarding shows the interpreted product identity and why listings receive their classifications before tracking."
+  fit="contain"
+/>
+
+## Tracking Architecture
+
+<PadelPriceTrackingFlow />
+
+The provider boundary keeps marketplace acquisition replaceable, while the current active path remains Tokopedia through ReefAPI. A `CanonicalProduct` represents the racket identity; multiple `MarketplaceListing` records represent seller offers. Provider ID and URL constraints protect listing identity. Each successful observation appends a `PriceSnapshot` instead of replacing the previous price. Listing updates, snapshot creation, and alert evaluation run in a database transaction.
+
+Tracking intent lives in PostgreSQL. BullMQ job schedulers and Redis move recurring searches to a separate worker; a per-product deduplication key prevents equivalent pending refresh jobs. The Next.js dashboard reads the persisted products, listings, prices, rules, and notification states.
+
+<Figure
+  src="/projects/padel-price/product-detail.png"
+  alt="NOX AT10 product detail showing a selected seller listing's chart, live price, and matched listings"
+  caption="The chart follows one selected listing, not a market-wide historical minimum. Dashed history is synthetic demo data; live observations are shown separately."
+  fit="contain"
+/>
+
+## Alerts & Delivery State
+
+Target-price, percentage-drop, and any-drop rules evaluate against each listing's previous live observation. A triggered rule creates a deduplicated `NotificationEvent` alongside its snapshot. Delivery then moves through explicit pending, sending, sent, failed, or skipped states. Telegram credentials are optional for the local application; missing credentials produce a visible skipped state rather than a claimed send.
+
+<Figure
+  src="/projects/padel-price/alerts.png"
+  alt="PadelPrice alert rules and recent notification panel showing an enabled target-price rule and a sent event"
+  caption="Rules and delivery history remain visible on the product page. The shown sent event is a local verification, not evidence of continuous production operation."
+  fit="contain"
+/>
+
+## Data-Source & Demo Boundaries
+
+I investigated Blibli and Lazada without enabling them as tracking sources. Direct Blibli access encountered marketplace verification; a third-party API returned search and detail data, but I could not independently verify current price accuracy, price meaning, freshness, or repeatability. Keeping that integration experimental protects the meaning of the stored history.
+
+Because PadelPrice runs locally, its portfolio charts also need an honest demonstration path. A deterministic seed creates 14 days of synthetic observations across five products and 18 listing histories. `PriceSnapshot.source` distinguishes `DEMO` from `LIVE`, with demo flags on seed-only products and listings. The seed and reset paths preserve live observations; demo history does not trigger alerts or Telegram delivery.
+
+<Callout>
+  PadelPrice is a local portfolio project. Synthetic history demonstrates the tracking experience; it is not a record of marketplace prices observed on those dates.
+</Callout>

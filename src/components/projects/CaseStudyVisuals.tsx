@@ -290,6 +290,27 @@ export function NotificationProcessingFlow() {
   );
 }
 
+export function PadelPriceTrackingFlow() {
+  return (
+    <VisualFrame
+      label="Tracking architecture"
+      title="One product identity connects marketplace offers, scheduled observations, and alert delivery."
+    >
+      <div className="mx-auto flex max-w-3xl flex-col">
+        <StepCard index="01" title="Tokopedia via ReefAPI" detail="The marketplace provider normalizes seller results into listing candidates." />
+        <FlowArrow direction="vertical" />
+        <StepCard index="02" title="Deterministic matcher" detail="Only confident product matches become tracked seller listings." tone="accent" />
+        <FlowArrow direction="vertical" />
+        <StepCard index="03" title="PostgreSQL" detail="Canonical products own listings; each listing accumulates price snapshots. The dashboard reads this state." />
+        <FlowArrow label="scheduled refresh" direction="vertical" />
+        <StepCard index="04" title="BullMQ + Redis worker" detail="Per-product schedules request another search and observation without blocking the dashboard." />
+        <FlowArrow label="new snapshot" direction="vertical" />
+        <StepCard index="05" title="Alert event + Telegram" detail="Rules create durable events; delivery records sent, failed, or skipped status." tone="success" />
+      </div>
+    </VisualFrame>
+  );
+}
+
 function SourceNode({ children, accent }: { children: ReactNode; accent?: boolean }) {
   return (
     <div className={cn("rounded-card border p-3 text-center text-xs font-medium text-fg", accent ? "border-accent/50 bg-accent/[0.07]" : "border-border bg-surface/50")}>
