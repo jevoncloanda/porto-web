@@ -82,6 +82,18 @@ Search the repo for `[` inside `content/` to find everything that still needs yo
 grep -rn "\[ADD\|\[YOUR" content/
 ```
 
+### Site icons
+
+The original logo is `favicon.png` at the repository root. Its full canvas, colours,
+aspect ratio and transparency are preserved in the resized icons in `src/app/`:
+
+- `favicon.ico`: 16, 32 and 48 px frames.
+- `icon.png`: 32 px browser icon.
+- `apple-icon.png`: 180 px Apple touch icon.
+
+Next.js automatically serves these files and adds their metadata links. When replacing
+the logo, regenerate all three assets from the original without cropping or recolouring.
+
 ### Personal information
 
 Edit `content/profile.ts` — name, title, location, email, bio, photo, GitHub and
