@@ -1,0 +1,96 @@
+---
+title: "TAYO"
+subtitle: "One seat, multiple journeys. One safe booking decision."
+summary: "A bus-booking application with segment-aware seat allocation, PostgreSQL advisory locks, idempotent booking, and temporary seat holds."
+year: 2026
+type: personal
+category: "Reservation Systems"
+featured: false
+confidential: false
+placeholder: false
+order: 3
+stack:
+  - "Next.js"
+  - "React"
+  - "TypeScript"
+  - "Go"
+  - "Gin"
+  - "PostgreSQL"
+cover: /projects/tayo/seat-hold.webp
+coverAlt: "TAYO seat map with seat C2 selected and an active five-minute hold before booking"
+---
+
+## Overview
+
+TAYO is a bus-booking application where passengers search scheduled trips, choose boarding and destination stops, and reserve a seat. An operations UI manages routes, buses, trips, and booking status. The engineering challenge is keeping seat availability correct across both route segments and competing requests.
+
+<Figure
+  src="/projects/tayo/segment-selection.webp"
+  alt="TAYO boarding selection in Jakarta with destination choices in Bandung, Cirebon, and Semarang"
+  caption="A trip has ordered stops. Passengers reserve a journey between two stops, rather than the entire route. All shown trips and bookings use fictional demo data."
+  fit="contain"
+/>
+
+## A Seat Belongs to a Segment
+
+A single occupied flag would waste capacity: a passenger getting off in Bandung should not prevent another from using that seat onward to Semarang. TAYO compares ordered stop intervals. Adjacent journeys are valid; intervals that share any stretch of the route conflict. Pending and confirmed bookings both occupy inventory; cancelled bookings do not.
+
+<SegmentOccupancy
+  title="Seat A1 can serve two adjacent journeys on the same trip."
+  stops={["Jakarta", "Bandung", "Cirebon", "Semarang"]}
+  journeys={[
+    { label: "Passenger A · seat A1", from: 0, to: 1, outcome: "Valid booking" },
+    { label: "Passenger B · seat A1", from: 1, to: 3, outcome: "Valid adjacent reuse" },
+    { label: "Another request · seat A1", from: 0, to: 2, outcome: "Rejected: overlaps", conflict: true },
+  ]}
+/>
+
+The same overlap rule applies to active holds. A seat must also belong to the trip's bus, both stops must belong to its route, and the destination must follow the boarding stop. Availability shown in the browser is a snapshot; the write path validates the current database state again.
+
+## The Database Makes the Decision
+
+Two passengers can see the same available seat before either submits a request. Checking availability and then inserting separately would leave a race. TAYO's Go/Gin API delegates to services and repositories; the repository makes the occupancy decision inside a PostgreSQL transaction.
+
+<ReservationFlow
+  title="Competing requests for the same trip and seat are serialized before checking occupancy."
+  steps={[
+    { title: "Two passengers · Go API", detail: "Validate the request and derive user identity from the authenticated session." },
+    { title: "Shared PostgreSQL advisory lock", detail: "Every hold or booking claim acquires the transaction-scoped lock for its trip and seat. A competing claim waits." },
+    { title: "Validate segment + current occupancy", detail: "Check route order, bus membership, pending or confirmed bookings, and unexpired holds for overlap." },
+    { title: "Commit one decision", detail: "Create a hold or booking when available; reject an overlapping claim. Hold conversion, booking, and retry mapping commit together." },
+  ]}
+/>
+
+The lock is deliberately scoped to the physical seat on a trip, even when requests concern different segments. This keeps one occupancy decision understandable at the cost of serializing those requests. It relies on every inventory-changing path using the same locking rule, including admin reconfirmation.
+
+Booking creation also takes a user-scoped idempotency lock before the seat lock. A retry with the same key and payload returns the original booking instead of allocating again; reusing the key for a different payload is rejected. The frontend retains the confirmation key for the current hold while retrying.
+
+## A Hold Is Temporary, a Booking Is Durable
+
+Selecting a seat creates a temporary hold for the chosen segment. PostgreSQL assigns its expiry and returns server time; the browser countdown is feedback, not the authority for reservation validity. The default hold lasts five minutes.
+
+<Figure
+  src="/projects/tayo/seat-hold.webp"
+  alt="TAYO route segment and seat map showing selected seat C2, a five-minute hold countdown, and Confirm booking"
+  caption="The selected seat is protected during confirmation. Other passengers cannot claim an overlapping segment while this hold remains active."
+  fit="contain"
+/>
+
+Confirmation checks ownership, status, expiry, and occupancy under the seat lock, then creates a pending booking and marks the hold converted in the same transaction. Confirming a hold does not mean payment or admin approval: admins separately confirm or cancel bookings.
+
+Expired holds stop blocking inventory through database-time filtering, without waiting for a cleanup job. The UI clears the selection, refreshes availability, and asks the passenger to choose again. Released holds also free inventory; stale or competing requests receive explicit recovery messages.
+
+<Figure
+  src="/projects/tayo/booking-detail.webp"
+  alt="Successful TAYO demo booking for seat C2 from Jakarta to Semarang, showing pending status, departure, arrival, and price"
+  caption="A successful hold conversion creates one durable pending booking. The receipt distinguishes that state from later admin confirmation."
+  fit="contain"
+/>
+
+## Proof & Current Scope
+
+PostgreSQL integration tests cover adjacent reuse, overlapping races, concurrent requests with the same idempotency key, active and expired holds, confirmation races, and expiry boundaries. The backend suite and vet passed locally against an isolated PostgreSQL database during extraction. GitHub Actions is configured to run backend checks with PostgreSQL 17; no remote CI result is claimed.
+
+Session handling uses HttpOnly cookies, validated JWT access tokens, and rotating refresh tokens stored as SHA-256 digests. Health and database-readiness endpoints, request IDs, and structured request logs support runtime diagnosis. These support the booking flow without replacing its transaction-level correctness checks.
+
+TAYO currently demonstrates the reservation workflow in a local environment. Payment and ticket resale are not implemented. The screenshots use the existing fictional operational seed; they do not represent customers, production traffic, or commercial deployment.

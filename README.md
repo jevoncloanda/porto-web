@@ -169,6 +169,15 @@ Professional case studies also use responsive, portfolio-native visuals from
 `src/components/projects/CaseStudyVisuals.tsx`. Their public narrative remains
 in MDX; the components contain only diagram/interface presentation.
 
+`<SegmentOccupancy>` accepts ordered stop names and journeys (`label`, zero-based
+`from`/`to` stop indices, `outcome`, and optional `conflict`). `<ReservationFlow>`
+accepts a title and ordered `{ title, detail }` steps. Both reuse the existing
+case-study frame; project-specific text stays in MDX. See `content/projects/tayo.mdx`.
+
+Private extraction evidence lives under `content/extraction/<slug>/extraction-notes.md`.
+Only `.mdx` files directly under `content/projects/` enter the generated project
+manifest. Never place extraction notes or runtime credentials under `public/`.
+
 ### Featured projects
 
 Set `featured: true`. The homepage shows up to four featured projects, newest first, and

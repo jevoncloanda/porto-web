@@ -4,10 +4,12 @@ import ProjectBody0 from "./project-bodies/project-0";
 import ProjectBody1 from "./project-bodies/project-1";
 import ProjectBody2 from "./project-bodies/project-2";
 import ProjectBody3 from "./project-bodies/project-3";
+import ProjectBody4 from "./project-bodies/project-4";
 
 export const projectBodies: Readonly<Record<string, ComponentType<{ components?: Record<string, unknown> }>>> = {
   "email-migration": ProjectBody0,
   "notification-center": ProjectBody1,
   "padel-price": ProjectBody2,
   "portal-hse": ProjectBody3,
+  "tayo": ProjectBody4,
 };

@@ -95,6 +95,69 @@ function StepCard({
   );
 }
 
+export function SegmentOccupancy({
+  title,
+  stops,
+  journeys,
+}: {
+  title: string;
+  stops: string[];
+  journeys: { label: string; from: number; to: number; outcome: string; conflict?: boolean }[];
+}) {
+  return (
+    <VisualFrame label="Segment-aware occupancy" title={title}>
+      <div className="flex justify-between gap-2 text-xs font-medium text-fg">
+        {stops.map((stop) => <span key={stop} className="max-w-[25%] text-center">{stop}</span>)}
+      </div>
+      <div className="mt-3 flex items-center" aria-hidden>
+        {stops.map((stop, index) => (
+          <div key={stop} className={cn("flex items-center", index < stops.length - 1 ? "flex-1" : "")}>
+            <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+            {index < stops.length - 1 ? <span className="h-px flex-1 bg-border-strong" /> : null}
+          </div>
+        ))}
+      </div>
+      <div className="mt-6 space-y-5">
+        {journeys.map((journey) => (
+          <div key={journey.label}>
+            <div className="mb-2 flex flex-wrap justify-between gap-2 text-xs">
+              <span className="font-medium text-fg">{journey.label}</span>
+              <span className={journey.conflict ? "text-rose-300" : "text-emerald-300"}>{journey.outcome}</span>
+            </div>
+            <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${stops.length - 1}, minmax(0, 1fr))` }}>
+              {stops.slice(1).map((stop, index) => (
+                <div key={stop} className={cn("h-8 rounded border", index >= journey.from && index < journey.to ? journey.conflict ? "border-rose-400/50 bg-rose-400/20" : "border-accent/50 bg-accent/20" : "border-border border-dashed")} />
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-muted">{stops[journey.from]} to {stops[journey.to]}</p>
+          </div>
+        ))}
+      </div>
+    </VisualFrame>
+  );
+}
+
+export function ReservationFlow({
+  title,
+  steps,
+}: {
+  title: string;
+  steps: { title: string; detail: string }[];
+}) {
+  return (
+    <VisualFrame label="Booking correctness boundary" title={title}>
+      <div className="mx-auto flex max-w-3xl flex-col">
+        {steps.map((step, index) => (
+          <div key={step.title}>
+            {index > 0 ? <FlowArrow direction="vertical" /> : null}
+            <StepCard index={String(index + 1).padStart(2, "0")} title={step.title} detail={step.detail} tone={index === steps.length - 1 ? "success" : "neutral"} />
+          </div>
+        ))}
+      </div>
+    </VisualFrame>
+  );
+}
+
 export function EvidenceCallout({
   value,
   label,

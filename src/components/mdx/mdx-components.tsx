@@ -12,6 +12,8 @@ import {
   PortalActionManagement,
   PortalIncidentLifecycle,
   PortalWorkflowMap,
+  SegmentOccupancy,
+  ReservationFlow,
 } from "@/components/projects/CaseStudyVisuals";
 import { cn } from "@/lib/cn";
 
@@ -137,4 +139,6 @@ export const mdxComponents = {
   PortalWorkflowMap,
   PortalIncidentLifecycle,
   PortalActionManagement,
+  SegmentOccupancy,
+  ReservationFlow,
 };
